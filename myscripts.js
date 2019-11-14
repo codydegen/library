@@ -39,7 +39,20 @@ function render(book) {
   let node = document.createElement("div");
   node.setAttribute("id", "book"+book)
   mainContainer.appendChild(node);
+  addInfo(book, node);
+  addRemoveButton(book, node);
+  addReadToggle(book, node);
 
+  // node.appendChild(list);
+  // mainContainer.appendChild(node);
+
+    // for (let key in myLibrary[i]) {
+    //   // property = key + 
+    //   console.log(key, myLibrary[i][key]);
+    // }
+};
+
+function addInfo(book, node) {
   let list = document.createElement("ul");
   list.classList.add("bookList");
   node.appendChild(list);
@@ -52,14 +65,41 @@ function render(book) {
     // console.log(textNode)
     list.appendChild(insideNode);
   }
-  // node.appendChild(list);
-  // mainContainer.appendChild(node);
 
-    // for (let key in myLibrary[i]) {
-    //   // property = key + 
-    //   console.log(key, myLibrary[i][key]);
-    // }
+};
 
+function addRemoveButton(book, node) {
+  let removeButton = document.createElement("button");
+  removeButton.setAttribute("id", "bookX"+book);
+  removeButton.setAttribute("onclick", `removeEntry(${book})`);
+  removeButton.textContent = "Delete Entry";
+  node.appendChild(removeButton);
+};
+
+function addReadToggle(book, node) {
+  let readToggle = document.createElement("button");
+  readToggle.setAttribute("id", "bookTog"+book);
+  readToggle.setAttribute("onclick", `toggleReadStatus(${book})`);
+  readToggle.textContent = "Toggle Read Status";
+  node.appendChild(readToggle);
+
+};
+
+function removeEntry(book) {
+  // console.log("remove entry");
+  let removedItem = document.querySelector(`#book${book}`);
+  let mainContainer = document.querySelector("#mainContainer");
+  removedItem.parentNode.removeChild(removedItem);
+
+};
+
+function toggleReadStatus(book) {
+  myLibrary[book].read = !myLibrary[book].read;
+  let myBook = document.getElementById("book"+book);
+  let myList = myBook.querySelector("ul");
+  let myRead = myList.lastElementChild;
+  // console.log(myRead);
+  myRead.textContent = "read: "+myLibrary[book].read;
 };
 
 function formHandle() {
@@ -69,7 +109,7 @@ function formHandle() {
   let i;
   for (i=0; i<x.length; i++) {
     content = x.elements[i].value;
-    console.log(content);
+    // console.log(content);
     // text += x.elements[i].value + "<br>";
   }
   let title = x.elements[0].value;
