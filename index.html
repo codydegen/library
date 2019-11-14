@@ -6,6 +6,22 @@
 </head>
 <body>
     <div id="mainContainer">law</div>
+    <button onclick="showForm(true)" id="newBook">New Book</button>
+    <div id="formContainer">
+    <form id="form1">
+      Title:<br>
+      <input id="titleIn" type="text" name="title" autofocus><br>
+      Author:<br>
+      <input id="authorIn" type="text" name="author"><br>
+      Pages:<br>
+      <input id="pagesIn" type="text" name="pages"><br>
+      Finished Reading:<br>
+      <input id="readTrue" type="radio" name="read" checked>Yes
+      <input id="readFalse" type="radio" name="read">No<br> 
+    </form>
+    <button onclick="formHandle()">aa</button>
+  </div>
+
 </body>
 <script src="myscripts.js"></script>
 </html>
