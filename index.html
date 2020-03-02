@@ -6,7 +6,7 @@
 </head>
 <body>
     <div id="mainContainer"></div>
-    <button onclick="showForm(true)" id="newBook">New Book</button>
+    <button onclick="UI.showForm(true)" id="newBook">New Book</button>
     <div id="formContainer">
     <form id="form1">
       Title:<br>
@@ -19,7 +19,7 @@
       <input id="readTrue" type="radio" name="read" checked>Yes
       <input id="readFalse" type="radio" name="read">No<br> 
     </form>
-    <button onclick="formHandle()">Add Book</button>
+    <button onclick="BookContainer.formHandle()">Add Book</button>
   </div>
 
 </body>

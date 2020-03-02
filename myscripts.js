@@ -1,126 +1,144 @@
-let myLibrary = [];
 
-function Book(title, author, pages, read) {
-  this.title = title
-  this.author = author
-  this.pages = pages
-  this.read = read
+
+class Book {
+  constructor(title, author, pages, read) {
+    this.title = title;
+    this.author = author;
+    this.pages = pages;
+    this.read = read;
+  }
+  info() {
+    return this.title + " by " + this.author + ", " + this.pages + ", " + (this.read ? " read" : " hasn't read");
+  }
+
+  toggleRead() {
+    this.read = !(this.read);
+  }
+
+  get id() {
+    return this._id;
+  }
+
+  set id(newID) {
+    this._id = newID;
+  }
+
 };
 
-Book.prototype.info = function() {
-return this.title+" by "+this.author+", "+this.pages+", "+(this.read?" read":" hasn't read");
-
-};
-
-function addBookToLibraryManual() {
-let title = prompt("what is the title?");
-let read = prompt("what is the read?");
-let pages = prompt("what is the pages?");
-let author = prompt("what is the author?");
-let book = new Book(title, author, pages, read);
-myLibrary.push(book);
-render(myLibrary.length - 1);
-};
-
-function addBookToLibrary(title, author, pages, read) {
-  let book = new Book(title, author, pages, read);
-  myLibrary.push(book);
-  render(myLibrary.length - 1);
+class UI {
+  static render(book) {
+    const mainContainer = document.querySelector("#mainContainer");
+    console.log(BookContainer.myLibrary[book].info());
+    let node = document.createElement("div");
+    BookContainer.myLibrary[book].id = "book"+book;
+    node.setAttribute("id", BookContainer.myLibrary[book].id);
+    mainContainer.appendChild(node);
+    this.addButtons(book, node);
   };
 
-// addBookToLibrary();
-let book = new Book("bob", "grrm", "23", "true");
-myLibrary.push(book);
+  static showForm(visibility) {
+    document.getElementById("formContainer").style.visibility = visibility ? "visible" : "hidden";
+  };
 
-render(0);
-function render(book) {
-  const mainContainer = document.querySelector("#mainContainer");
-  console.log(myLibrary[book].info());
-  let node = document.createElement("div");
-  node.setAttribute("id", "book"+book)
-  mainContainer.appendChild(node);
-  addInfo(book, node);
-  addRemoveButton(book, node);
-  addReadToggle(book, node);
-
-  // node.appendChild(list);
-  // mainContainer.appendChild(node);
-
-    // for (let key in myLibrary[i]) {
-    //   // property = key + 
-    //   console.log(key, myLibrary[i][key]);
-    // }
-};
-
-function addInfo(book, node) {
-  let list = document.createElement("ul");
-  list.classList.add("bookList");
-  node.appendChild(list);
-  let insideNode = document.createElement("li");
-  let textNode;
-  let propertyList = Object.entries(myLibrary[book]);
-  for(let i = 0;i<propertyList.length;i++) {
+  static addInfo(book, node) {
+    let list = document.createElement("ul");
+    list.classList.add("bookList");
+    node.appendChild(list);
     let insideNode = document.createElement("li");
-    insideNode.textContent = propertyList[i][0] + ": " + propertyList[i][1];
-    // console.log(textNode)
-    list.appendChild(insideNode);
-  }
+    let textNode;
+    let propertyList = Object.entries(BookContainer.myLibrary[book]);
+    for(let i = 0;i<propertyList.length-1;i++) {
+      let insideNode = document.createElement("li");
+      insideNode.textContent = propertyList[i][0] + ": " + propertyList[i][1];
+      // console.log(textNode)
+      list.appendChild(insideNode);
+    }
+  };
+  
+  static addRemoveButton(book, node) {
+    let removeButton = document.createElement("button");
+    removeButton.setAttribute("id", "bookX"+book);
+    removeButton.setAttribute("onclick", `removeEntry(${book})`);
+    removeButton.textContent = "Delete Entry";
+    node.appendChild(removeButton);
+  };
+  
+  static addReadToggle(book, node) {
+    let readToggle = document.createElement("button");
+    readToggle.setAttribute("id", "bookTog"+book);
+    readToggle.setAttribute("onclick", `BookContainer.toggleReadStatus(myLibrary[${book}])`);
+    readToggle.textContent = "Toggle Read Status";
+    node.appendChild(readToggle);
+  };
 
+  static addButtons(book, node) {
+    this.addInfo(book, node);
+    this.addRemoveButton(book, node);
+    this.addReadToggle(book, node);
+  };
 };
 
-function addRemoveButton(book, node) {
-  let removeButton = document.createElement("button");
-  removeButton.setAttribute("id", "bookX"+book);
-  removeButton.setAttribute("onclick", `removeEntry(${book})`);
-  removeButton.textContent = "Delete Entry";
-  node.appendChild(removeButton);
-};
+class BookContainer {
 
-function addReadToggle(book, node) {
-  let readToggle = document.createElement("button");
-  readToggle.setAttribute("id", "bookTog"+book);
-  readToggle.setAttribute("onclick", `toggleReadStatus(${book})`);
-  readToggle.textContent = "Toggle Read Status";
-  node.appendChild(readToggle);
+  static myLibrary = [];
 
-};
+  static addBookToLibrary(title, author, pages, read) {
+    let book = new Book(title, author, pages, read);
+    myLibrary.push(book);
+    UI.render(myLibrary.length - 1);
+    };
 
-function removeEntry(book) {
-  // console.log("remove entry");
-  let removedItem = document.querySelector(`#book${book}`);
-  let mainContainer = document.querySelector("#mainContainer");
-  removedItem.parentNode.removeChild(removedItem);
+  static addBookToLibraryManual() {
+    let title = prompt("what is the title?");
+    let read = prompt("what is the read?");
+    let pages = prompt("what is the pages?");
+    let author = prompt("what is the author?");
+    let book = new Book(title, author, pages, read);
+    myLibrary.push(book);
+    UI.render(myLibrary.length - 1);
+    };
 
-};
+  static removeEntry(book) {
+    // console.log("remove entry");
+    let removedItem = document.querySelector(`#book${book}`);
+    let mainContainer = document.querySelector("#mainContainer");
+    removedItem.parentNode.removeChild(removedItem);
+  };
 
-function toggleReadStatus(book) {
-  myLibrary[book].read = !myLibrary[book].read;
-  let myBook = document.getElementById("book"+book);
-  let myList = myBook.querySelector("ul");
-  let myRead = myList.lastElementChild;
-  // console.log(myRead);
-  myRead.textContent = "read: "+myLibrary[book].read;
-};
+  static formHandle() {
+    let form = document.getElementById("form1");
+    let i, content;
+    for (i=0; i<form.length; i++) {
+      content = form.elements[i].value;
+    }
+    let title = form.elements[0].value;
+    let author = form.elements[1].value;
+    let pages = form.elements[2].value;
+    let read = form.elements[3].checked;
+    BookContainer.addBookToLibrary(title, author, pages, read);
+    UI.showForm(false);
+  };
 
-function formHandle() {
-  let x = document.getElementById("form1");
-  let content = "";
-  let label = "";
-  let i;
-  for (i=0; i<x.length; i++) {
-    content = x.elements[i].value;
-    // console.log(content);
-    // text += x.elements[i].value + "<br>";
-  }
-  let title = x.elements[0].value;
-  let author = x.elements[1].value;
-  let pages = x.elements[2].value;
-  let read = x.elements[3].checked;
-  addBookToLibrary(title, author, pages, read);
-  showForm(false);
-  // console.log( text )
-};
+  static toggleReadStatus(book) {
+    book.toggleRead();
+    let myBook = document.getElementById("book"+book);
+    let myList = myBook.querySelector("ul");
+    let myRead = myList.lastElementChild;
+    // console.log(myRead);
+    myRead.textContent = "read: "+myLibrary[book].read;
+  };
+}
 
-function showForm(visibility) {
-  document.getElementById("formContainer").style.visibility = visibility ? "visible" : "hidden";
-};
+
+let book = new Book("bob", "grrm", "23", "true");
+BookContainer.myLibrary.push(book);
+
+UI.render(0);
+
+
+
+
+
+
+
+
